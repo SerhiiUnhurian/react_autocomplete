@@ -3,7 +3,6 @@ import './App.scss';
 import { peopleFromServer } from './data/people';
 import { Person } from './types/Person';
 import { Dropdown } from './Dropdown/Dropdown';
-// import debounce from 'lodash.debounce';
 
 export const App: React.FC = () => {
   const [selectedPerson, setSelectedPerson] = useState<Person | null>(null);

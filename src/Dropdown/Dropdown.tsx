@@ -17,11 +17,12 @@ type Props = {
 export const Dropdown: React.FC<Props> = ({ people, delay, onSelected }) => {
   const [query, setQuery] = useState('');
   const [appliedQuery, setAppliedQuery] = useState('');
+  const [isOpen, setIsOpen] = useState(true);
   const input = useRef<HTMLInputElement>(null);
 
   const applyQuery = useCallback(debounce(setAppliedQuery, delay), []);
 
-  const normalizedQuery = appliedQuery.toLowerCase();
+  const normalizedQuery = appliedQuery.trim().toLowerCase();
 
   const filteredPeople = useMemo(() => {
     return people.filter(person =>
@@ -39,6 +40,11 @@ export const Dropdown: React.FC<Props> = ({ people, delay, onSelected }) => {
     onSelected(null);
   };
 
+  const handleSelectPerson = (person: Person) => {
+    onSelected(person);
+    setIsOpen(false);
+  };
+
   return (
     <>
       <div className="dropdown is-active">
@@ -50,23 +56,26 @@ export const Dropdown: React.FC<Props> = ({ people, delay, onSelected }) => {
             data-cy="search-input"
             value={query}
             onChange={event => handleQueryChange(event)}
+            onClick={() => setIsOpen(true)}
             ref={input}
           />
         </div>
 
-        <div className="dropdown-menu" role="menu" data-cy="suggestions-list">
-          {filteredPeople.map(person => (
-            <div className="dropdown-content" key={person.born}>
-              <div
-                className="dropdown-item"
-                data-cy="suggestion-item"
-                onClick={() => onSelected(person)}
-              >
-                <p className="has-text-link">{person.name}</p>
+        {isOpen && (
+          <div className="dropdown-menu" role="menu" data-cy="suggestions-list">
+            {filteredPeople.map(person => (
+              <div className="dropdown-content" key={person.born}>
+                <div
+                  className="dropdown-item"
+                  data-cy="suggestion-item"
+                  onClick={() => handleSelectPerson(person)}
+                >
+                  <p className="has-text-link">{person.name}</p>
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {filteredPeople.length === 0 && (
