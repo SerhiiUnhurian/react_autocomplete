@@ -7,6 +7,7 @@ import React, {
 } from 'react';
 import { Person } from '../types/Person';
 import debounce from 'lodash.debounce';
+import { v4 as uuidv4 } from 'uuid';
 
 type Props = {
   people: Person[];
@@ -14,7 +15,11 @@ type Props = {
   onSelected: (person: Person | null) => void;
 };
 
-export const Dropdown: React.FC<Props> = ({ people, delay, onSelected }) => {
+export const Dropdown: React.FC<Props> = ({
+  people,
+  delay = 300,
+  onSelected,
+}) => {
   const [query, setQuery] = useState('');
   const [appliedQuery, setAppliedQuery] = useState('');
   const [isOpen, setIsOpen] = useState(true);
@@ -64,7 +69,7 @@ export const Dropdown: React.FC<Props> = ({ people, delay, onSelected }) => {
         {isOpen && (
           <div className="dropdown-menu" role="menu" data-cy="suggestions-list">
             {filteredPeople.map(person => (
-              <div className="dropdown-content" key={person.born}>
+              <div className="dropdown-content" key={uuidv4()}>
                 <div
                   className="dropdown-item"
                   data-cy="suggestion-item"
